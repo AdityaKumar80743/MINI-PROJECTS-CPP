@@ -85,11 +85,10 @@ void drawHangman(int stage) {
     cout << stages[stage];
 }
 
-
-
 void game() {
-    vector<string> category = hints[rand() % (hints.size()-1)]; // get random category of words
-    string categoryHints = category[category.size()-1];
+    // get random category and related word to guess
+    vector<string> category = hints[rand() % (hints.size())]; // get random category of words
+    string categoryHints = category.back(); // hint 
     string hint = category[rand() % (category.size()-1)]; // get random in that caterogy
     string guessed (hint.length(),'-'); // initialiy no words are guessed
 
@@ -98,12 +97,14 @@ void game() {
         string input; 
         bool gotGuess = false;
 
-        drawHangman(6-attempts);
+        drawHangman(6-attempts); // draw hangman according to attempts left
         cout << "HINT: " << categoryHints << endl;
         cout << "WORDS: " << guessed << endl; 
 
         cout << "Your Guess: ";
         cin >> input;
+
+        // input handling
         if (input.size() != 1 || !isalpha(input[0])) {
             cout << "Invalid Input - Enter only one letter...." << endl;
             continue;
@@ -127,11 +128,10 @@ void game() {
         if (!gotGuess) attempts--; // wrong guess
     }
     // lost
-    drawHangman();
+    drawHangman(6);
     cout << "word was: " << hint << endl;
     cout << "Game Over! the man is hanged...." << endl;
 }
-
 
 void rules() { // game rules
     cout << "-----------------------------" << endl;
@@ -148,7 +148,6 @@ void rules() { // game rules
     cout << "-----------------------------" << endl;
 }
  
-
 int main() {
     srand(time(0)); // the rand();
     rules();
@@ -156,7 +155,7 @@ int main() {
         game();
 
         char action;
-        cout << "Play Again: (ENTER/N) - ";
+        cout << "Play Again: (ANY / N) - ";
         cin >> action;
 
         if (toupper(action) == 'N') break; 
@@ -165,4 +164,3 @@ int main() {
 
     return 0;
 }
-
