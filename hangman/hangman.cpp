@@ -11,30 +11,81 @@ vector<vector<string>> hints = {{"LION","TIGER","ELEPHANT","ZEBRA","KANGAROO","G
                                 {"PIZZA","BURGER","SUSHI","PASTA","SANDWICH","STEAK","TACOS","NOODLES","FRIEDRICE","SALAD","PANCAKES","CURRY","SOUP","KEBAB","OMELETTE", "FOOD"}, // food
                                 {"APPLE","BANANA","ORANGE","MANGO","GRAPES","PINEAPPLE","STRAWBERRY","WATERMELON","CHERRY","PEACH","KIWI","LEMON","PAPAYA","COCONUT","GUAVA","FRUIT"}}; // fruit
 
-void drawHangman(int n=6) {
-    // hangman body parts 
-    vector<vector<string>> parts = {{" "," "," ","|"," "},
-                                    {" "," "," ","O"," "},
-                                    {" "," ","/","|","\\"},
-                                    {" "," ","/"," ","\\"}};
-                            
-    int count = -1; // should show at least one part
+void drawHangman(int stage) {
+    // hangman stages (0–6)
+    const vector<string> stages = {
+        // 0: empty gallows
+        "+-------+\n"
+        "|       |\n"
+        "|        \n"
+        "|        \n"
+        "|        \n"
+        "|\n"
+        "_________\n",
 
-    cout << "+-------+" << endl;
-    for (int i=0; i<parts.size(); i++) {
-        for (int j=0; j<parts[i].size(); j++) {
-            cout << parts[i][j];
-            if (parts[i][j] != " ") { // body part found
-                count++;
-            }
-            if (count >= n) { 
-                cout << "\n_________" << endl;
-                return;
-            }
-        }
-        cout << endl;
-    }
+        // 1: head
+        "+-------+\n"
+        "|       |\n"
+        "|       O\n"
+        "|        \n"
+        "|        \n"
+        "|\n"
+        "_________\n",
+
+        // 2: head + body
+        "+-------+\n"
+        "|       |\n"
+        "|       O\n"
+        "|       |\n"
+        "|        \n"
+        "|\n"
+        "_________\n",
+
+        // 3: head + body + left arm
+        "+-------+\n"
+        "|       |\n"
+        "|       O\n"
+        "|      /|\n"
+        "|        \n"
+        "|\n"
+        "_________\n",
+
+        // 4: head + body + both arms
+        "+-------+\n"
+        "|       |\n"
+        "|       O\n"
+        "|      /|\\\n"
+        "|        \n"
+        "|\n"
+        "_________\n",
+
+        // 5: head + body + arms + one leg
+        "+-------+\n"
+        "|       |\n"
+        "|       O\n"
+        "|      /|\\\n"
+        "|      / \n"
+        "|\n"
+        "_________\n",
+
+        // 6: full hangman
+        "+-------+\n"
+        "|       |\n"
+        "|       O\n"
+        "|      /|\\\n"
+        "|      / \\\n"
+        "|\n"
+        "_________\n"
+    };
+
+    // clamp stage to [0,6]
+    if (stage < 0) stage = 0;
+    if (stage > 6) stage = 6;
+
+    cout << stages[stage];
 }
+
+
 
 void game() {
     vector<string> category = hints[rand() % (hints.size()-1)]; // get random category of words
@@ -72,7 +123,7 @@ void game() {
             cout << "--------------------------" << endl;
             return;
         }
-      
+
         if (!gotGuess) attempts--; // wrong guess
     }
     // lost
@@ -81,12 +132,13 @@ void game() {
     cout << "Game Over! the man is hanged...." << endl;
 }
 
+
 void rules() { // game rules
     cout << "-----------------------------" << endl;
     cout << "  WELCOME TO HANGMAN GAME    " << endl;
     cout << "-----------------------------" << endl;
 
-    drawHangman(); // draw full hangman
+    drawHangman(6); // draw full hangman
 
     cout << "-----------------------------" << endl;
     cout << "Rules:" << endl;
@@ -95,8 +147,10 @@ void rules() { // game rules
     cout << "- You have 6 chances before the man is hanged!" << endl;
     cout << "-----------------------------" << endl;
 }
+ 
 
 int main() {
+    srand(time(0)); // the rand();
     rules();
     while (true) {
         game();
@@ -108,5 +162,7 @@ int main() {
         if (toupper(action) == 'N') break; 
     }
 
+
     return 0;
 }
+
